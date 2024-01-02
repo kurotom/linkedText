@@ -22,7 +22,7 @@ def main():
     filename = args.filename
 
     if filename is not None:
-        r = LinkedText(filename=filename)
+        r = LinkedText(markdown_file=filename)
         r.process()
         print('Task Complete!.')
 
