@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "linkedtext"}]
 keywords = ["text", "links", "index"]
 license = "LGPL-3.0-or-later"
-repository = ""
+repository = "https://github.com/kurotom/linkedText"
 classifiers = [
 "Topic :: Text Processing",
 "Topic :: Text Processing :: Indexing",
@@ -35,4 +35,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.urls]
-"Bug Tracker" = ""
+"Bug Tracker" = "https://github.com/kurotom/linkedText/issues"

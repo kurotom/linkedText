@@ -6,8 +6,17 @@ The original file is never altered, the final or generated file ends with a
 prefix `_finish.md`.
 """
 
-from linkedtext.exceptions import FileNotFound
+from linkedtext.exceptions import (
+    FileNotFound,
+    ArgumentError,
+    EmptyString
+)
 import re
+
+from linkedtext.utils import (
+    is_file,
+    prepare_string
+)
 
 
 class LinkedText:
@@ -17,7 +26,8 @@ class LinkedText:
 
     def __init__(
         self,
-        filename: str = None
+        markdown_file: str = None,
+        string: str = None,
     ) -> None:
         """
         Constructor:
@@ -28,12 +38,13 @@ class LinkedText:
         Return:
             None
         """
-        self.filename = filename
-        self.data = self.read(filename)
+        self.filename = markdown_file
+        self.string = string
+        self.data = []
         self.indexes = []
         self.contents_list = ''
 
-    def read(
+    def __read(
         self,
         filename: str = None
     ) -> list:
@@ -49,11 +60,37 @@ class LinkedText:
         Raise:
             FileNotFound: file not provided.
         """
-        if filename is not None:
-            with open(filename, 'r') as fl:
-                return fl.readlines()
+        with open(filename, 'r') as fl:
+            return fl.readlines()
+
+    def __check_content(self) -> None:
+        """
+        Checks existence and content of the data source.
+
+        Returns:
+            None
+
+        Raises:
+            `FileNotFound`: in case of not providing a markdown file.
+            `ArgumentError`: incorrect argument.
+            `EmptyString` : empty string.
+        """
+        if self.filename is not None:
+            if is_file(self.filename):
+                self.data = self.__read(self.filename)
+            else:
+                raise FileNotFound('Need a file to start convert.')
+
+        elif self.string is not None:
+            if len(self.string) > 0:
+                if not is_file(self.filename):
+                    self.data = prepare_string(self.string)
+                else:
+                    raise ArgumentError('markdown_file')
+            else:
+                raise EmptyString()
         else:
-            raise FileNotFound('Need a file to start convert.')
+            raise ArgumentError()
 
     def process(
         self
@@ -66,13 +103,16 @@ class LinkedText:
         Returns:
             None
         """
+
+        self.__check_content()
+
         indexes = []
         code_section = False
         keywords = ['contenido', 'índice', 'indice', 'index']
         index_table_content = None
 
         for i in range(len(self.data)):
-            r = re.findall(r'^\#{1,6} [A-Z].+', self.data[i])
+            r = re.findall(r'^\#{1,6} [A-Z].*', self.data[i])
             if '```' in self.data[i]:
                 code_section = not code_section
             if r != []:
@@ -101,7 +141,11 @@ class LinkedText:
         else:
             self.data = self.contents_list + self.data
 
-        self.__to_write()
+        if self.string is not None:
+            print("".join(self.data))
+
+        if self.filename is not None:
+            self.to_write()
 
     def __to_index(
         self,
@@ -159,15 +203,18 @@ class LinkedText:
         line = line.replace(':', '')
         return f'<a name="{line}"></a>\n'
 
-    def __to_write(self) -> None:
+    def to_write(self) -> None:
         """
         Write the list of lines to a file ending with `_finish.md`.
 
         Returns:
             None
         """
-        file = self.filename.split('.md')
-        filename = f'{file[0]}_finish.md'
+        if self.filename is not None and self.string is None:
+            file = self.filename.split('.md')
+            filename = f'{file[0]}_finish.md'
+        else:
+            filename = 'linkedtext_finish.md'
 
         with open(filename, 'w') as filew:
             filew.writelines(self.data)
