@@ -54,9 +54,6 @@ Second paragraph.
 
 Third paragraph.
 
-```python
-print('Hello!')
-```
 
 # Fourth
 
@@ -99,9 +96,6 @@ Second paragraph.
 
 Third paragraph.
 
-```python
-print('Hello!')
-```
 
 <a name="fourth"></a>
 
