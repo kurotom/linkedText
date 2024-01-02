@@ -13,7 +13,7 @@ The idea came up to automate this manual process, it was tedious to write and ch
 $ pip install linkedtext
 ```
 
-2. Using on terminal
+2. In the terminal
 
 ```bash
 $ linkedtext -f path/my_file.md
