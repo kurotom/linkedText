@@ -5,12 +5,23 @@ It allows to create a table of contents and link them to the different titles of
 The idea came up to automate this manual process, it was tedious to write and check that each title has its link and create the table of contents. Now I simply write the content, run the program and I have the finished document.
 
 
-## Usage - CLI
-
-1. Install `linkedtext`
+## Installation
 
 ```bash
 $ pip install linkedtext
+```
+
+## Usage CLI
+
+1. Help
+
+```bash
+usage: linkedtext [-h] -f FILENAME
+
+options:
+  -h, --help            show this help message and exit
+  -f FILENAME, --filename FILENAME
+                        Markdown file.
 ```
 
 2. In the terminal
@@ -27,13 +38,14 @@ The `LinkedText` class supports both Markdown files (`markdown_file` parameter) 
 
 * Markdown file
 
-When passing a Markdown file, it will be parsed and processed, generating a new file with the same name as the original and ending with `_finish.md`. The original file is never altered. Writing is automatic.
+When passing a Markdown file, it will be parsed and processed, generating a new file with the same name as the original and ending with `_finish`. The original file is never altered. Writing is automatic.
 
 ```python
 >>> from linkedtext import LinkedText
 >>>
 >>> c = LinkedText(markdown_file='my_file.md')
 >>> c.process()
+>>> c.to_write()
 ```
 
 
@@ -123,6 +135,8 @@ Fourth paragraph.
 
 # Tests
 
-```python
+```bash
+. run_tests.sh
+# or
 python -m unittest
 ```
